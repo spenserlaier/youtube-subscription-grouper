@@ -9,12 +9,14 @@ import SubscriptionCard from '@/components/SubscriptionCard';
 export default async function Home() {
     const oauthClient = getAuthClient();
     const credentials = oauthClient.credentials;
-    console.log(credentials);
+    //console.log(credentials);
     if (credentials.access_token == undefined) {
+        console.log("credentials are undefined. not properly set...")
         redirect("/login");
     }
     const subscribedChannelsResponse: subscriptionResponse = await getSubscribedChannels(credentials.access_token);
-    //console.log(subscribedChannels);
+    //console.log("logging response from /home")
+    //console.log(subscribedChannelsResponse);
     /*
     if (subscribedChannelsResponse != null ){
         for (const channel of subscribedChannelsResponse.items) {
@@ -24,21 +26,21 @@ export default async function Home() {
      */
     if (subscribedChannelsResponse != null) {
         //console.log(subscribedChannelsResponse)
-        console.log(subscribedChannelsResponse.nextPageToken)
-        console.log(subscribedChannelsResponse.prevPageToken)
-        console.log(subscribedChannelsResponse.pageInfo)
-        console.log(subscribedChannelsResponse.kind)
+        //console.log(subscribedChannelsResponse.nextPageToken)
+        //console.log(subscribedChannelsResponse.prevPageToken)
+        //console.log(subscribedChannelsResponse.pageInfo)
+        //console.log(subscribedChannelsResponse.kind)
     }
     const subscriptions = subscribedChannelsResponse.items;
     const subscriptionCards = subscriptions.map( (sub) => {
         //console.log(sub.snippet.title);
-        console.log(sub)
+        //console.log(sub)
         return <SubscriptionCard subscriptionName={sub.snippet.title} key={sub.id}/>
     })
 
   return (
       <>
-          <h1> this is the homepage huzzah</h1>
+          <h1 className="text-red-50"> this is the homepage huzzah</h1>
           <div> 
               retrieved credentials:
               {credentials.access_token}
