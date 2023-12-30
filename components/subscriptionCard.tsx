@@ -1,7 +1,10 @@
-export default function subscriptionCard(subscriptionName:string)  {
+type props = {
+    subscriptionName: string
+}
+export default function SubscriptionCard(props: props)  {
     return (
         <> 
-            <h1> {subscriptionName}</h1>
+            <h1> {props.subscriptionName}</h1>
         </>
     )
-}
+};

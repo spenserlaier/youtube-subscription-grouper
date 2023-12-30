@@ -4,7 +4,7 @@ export type subscription = {
   "id": string,
   "snippet": {
     "publishedAt": Date,
-    "channelTitle": string,
+    "channelTitle": string, // this has been returning undefined; use title instead for the channel title
     "title": string,
     "description": string,
     "resourceId": {
