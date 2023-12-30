@@ -15,32 +15,16 @@ export default async function Home() {
         redirect("/login");
     }
     const subscribedChannelsResponse: subscriptionResponse = await getSubscribedChannels(credentials.access_token);
-    //console.log("logging response from /home")
-    //console.log(subscribedChannelsResponse);
-    /*
-    if (subscribedChannelsResponse != null ){
-        for (const channel of subscribedChannelsResponse.items) {
-            console.log(channel);
-        }
-    }
-     */
-    if (subscribedChannelsResponse != null) {
-        //console.log(subscribedChannelsResponse)
-        //console.log(subscribedChannelsResponse.nextPageToken)
-        //console.log(subscribedChannelsResponse.prevPageToken)
-        //console.log(subscribedChannelsResponse.pageInfo)
-        //console.log(subscribedChannelsResponse.kind)
-    }
+    const subscriptionCount = subscribedChannelsResponse.pageInfo.totalResults;
     const subscriptions = subscribedChannelsResponse.items;
     const subscriptionCards = subscriptions.map( (sub) => {
-        //console.log(sub.snippet.title);
-        //console.log(sub)
         return <SubscriptionCard subscriptionName={sub.snippet.title} key={sub.id}/>
     })
 
   return (
       <>
           <h1 className="text-red-50"> this is the homepage huzzah</h1>
+          <div>Total Subscribed Channels Found: {subscriptionCount}</div>
           <div> 
               retrieved credentials:
               {credentials.access_token}
