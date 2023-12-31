@@ -31,14 +31,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         console.log("logging user information")
         const userJSON: userIdentification = await userResponse.json();
         console.log(userJSON);
-        const createUser = createUserIfNotExists(userJSON.email, userJSON.id);
-        //const bobjones: ResponseInit = new NextResponse()
-            return new Response('Hello, Next.js!', {
-        status: 200,
-        headers: { 'Set-Cookie': `token=${token.value}; HttpOnly; SameSite;` },
-      })
         //return NextResponse.redirect(new URL('/home', req.url))
-)
     }
     catch (error: any){
         console.log("Something went wrong when setting credentials");

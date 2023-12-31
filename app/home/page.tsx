@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { getSubscribedChannels } from '@/utils/youtube/youtube-utils';
 import { subscription, subscriptionResponse } from '@/utils/youtube/youtube-utils-types';
 import SubscriptionCard from '@/components/SubscriptionCard';
-//import Link from 'next/link';
+import { getToken } from "next-auth/jwt"
 
 export default async function Home() {
     const oauthClient = getAuthClient();
