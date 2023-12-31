@@ -52,3 +52,17 @@ export type subscriptionResponse = {
     subscription 
   ]
 }
+
+
+export type userIdentification = {
+  id: string,
+  email: string,
+  verified_email: boolean,
+  name: string,
+  given_name: string,
+  family_name: tring,
+  picture: string, //link to url for profile picture
+  locale: string,
+}
+
+
