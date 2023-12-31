@@ -17,10 +17,10 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <NextAuthProvider>
+        <NextAuthProvider>
+            <html lang="en">
                 <body className={inter.className}>{children}</body>
-            </NextAuthProvider>
-        </html>
+            </html>
+        </NextAuthProvider>
     );
 }
