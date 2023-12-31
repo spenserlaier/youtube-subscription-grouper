@@ -1,15 +1,12 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import LoginButton from "@/components/LoginButton";
 
 export default function Home() {
-
-
-
-  return (
-      <div>
-          this is a default div
-          oh snap
-          <Link href="/login"> Log In Here</Link>
-      </div>
-  )
+    return (
+        <>
+            <h1>This is the Home Page</h1>
+            <div>
+                <LoginButton />
+            </div>
+        </>
+    );
 }

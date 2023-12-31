@@ -1,5 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { subscriptionResponse } from "@/types/youtube-utils-types";
 
 export async function GET(request: NextRequest) {
     const token = await getToken({ req: request });
@@ -21,25 +22,21 @@ export async function GET(request: NextRequest) {
             },
         });
         if (!subscriptionResponse.ok) {
-            /*
-            throw new Error(
-                `HTTP error! Status: ${subscriptionResponse.status}`
-            );
-            */
-            console.log("Something went wrong when requesting subscriptions");
+            console.error("Something went wrong when requesting subscriptions");
             return new Response(null, {
                 status: 400,
             });
         }
-        const data = await subscriptionResponse.json();
-        return new Response(data, {
-
-
-        })
-        return data;
+        const subscriptionData: subscriptionResponse =
+            await subscriptionResponse.json();
+        return Response.json(subscriptionData);
     } catch (error) {
-        console.log(error);
-        console.error("Error fetching subscribed channels:", error);
-        return null;
+        console.error(
+            "Internal Error when fetching subscribed channels:",
+            error
+        );
+        return new Response(null, {
+            status: 500,
+        });
     }
 }
