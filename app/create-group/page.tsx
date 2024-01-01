@@ -45,7 +45,6 @@ export default async function CreateGroup() {
                 Total Subscribed Channels Found:{" "}
                 {subscriptionCount ? subscriptionCount : 0}
             </div>
-            {/*TODO: make the primary/source list unmodifiable, perhaps via props */}
             <SubscriptionListForm initialSubscriptions={subscriptions} />
         </>
     );

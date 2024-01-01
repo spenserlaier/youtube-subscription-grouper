@@ -1,6 +1,6 @@
 "use client";
 import { useDrag, useDrop } from "react-dnd";
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, ChangeEvent } from "react";
 import SubscriptionCard from "./SubscriptionCard";
 import { draggableCard } from "@/types/draggable";
 import { subscription } from "@/types/youtube-utils-types";
@@ -19,6 +19,7 @@ export default function SubscriptionListForm(props: props) {
     const [selectedSubscriptions, setSelectedSubscriptions] = useState<
         subscription[]
     >([]);
+    const [groupTitle, setGroupTitle] = useState<string>("");
     const allSubscriptionsList = (
         <SubscriptionList
             currentSubscriptions={props.initialSubscriptions}
@@ -33,12 +34,22 @@ export default function SubscriptionListForm(props: props) {
             callback={setSelectedSubscriptions}
         />
     );
+    const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setGroupTitle(e.target.value);
+    };
     return (
         <>
+            <h1>
+                {" "}
+                Group Title:{" "}
+                <input value={groupTitle} onChange={handleNameChange}></input>
+            </h1>
             <div className="flex flex-row">
                 {allSubscriptionsList}
                 {selectedSubscriptionsList}
             </div>
+
+            <button> Submit List </button>
         </>
     );
 }

@@ -17,13 +17,6 @@ type collected = {
 };
 const acceptedItems = "SubscriptionCard";
 export default function SubscriptionList(props: props) {
-    if (props.canModify) {
-        console.log(
-            "current subscriptions from list component: ",
-            props.currentSubscriptions
-        );
-    }
-
     const [collectedProps, drop] = useDrop(() => ({
         accept: [acceptedItems],
         collect: (monitor) => {
