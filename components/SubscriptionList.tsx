@@ -1,11 +1,15 @@
 "use client";
 import { useDrag, useDrop } from "react-dnd";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import SubscriptionCard from "./SubscriptionCard";
 import { draggableCard } from "@/types/draggable";
+import { subscription } from "@/types/youtube-utils-types";
 
 type props = {
     //subscriptionName: string;
+    currentSubscriptions: subscription[];
+    canModify: boolean;
+    callback: Dispatch<SetStateAction<subscription[]>>;
 };
 
 type collected = {
@@ -13,46 +17,42 @@ type collected = {
 };
 const acceptedItems = "SubscriptionCard";
 export default function SubscriptionList(props: props) {
-    const [currentSubscriptions, setCurrentSubscriptions] = useState<any>([]);
+    if (props.canModify) {
+        console.log(
+            "current subscriptions from list component: ",
+            props.currentSubscriptions
+        );
+    }
+
     const [collectedProps, drop] = useDrop(() => ({
         accept: [acceptedItems],
         collect: (monitor) => {
-            const item = monitor.getItem();
-            console.log(item);
+            const item: subscription = monitor.getItem();
         },
         drop: (item, monitor) => {
-            // Behavior when the item is dropped
-            console.log("Item dropped:", item);
-            //onDrop(item); // Call a custom function with the dropped item
-            setCurrentSubscriptions((currentSubscriptions: string[]) => {
-                if (
-                    !currentSubscriptions.includes(
-                        (item as draggableCard).subscriptionName
-                    )
-                ) {
-                    return [
-                        ...currentSubscriptions,
-                        (item as draggableCard).subscriptionName,
-                    ];
+            const newSub = item as subscription;
+            props.callback((subscriptions) => {
+                if (props.canModify) {
+                    const currentIDs = subscriptions.map((sub) => sub.id);
+                    if (!currentIDs.includes(newSub.id)) {
+                        return [...subscriptions, newSub];
+                    }
+                    return subscriptions;
                 } else {
-                    return currentSubscriptions;
+                    return subscriptions.filter((sub) => sub.id != newSub.id);
                 }
             });
         },
     }));
-    const subscriptionComponents = currentSubscriptions.map(
-        (subName: string) => {
-            return (
-                <SubscriptionCard subscriptionName={subName} key={subName} />
-            );
-        }
-    );
+    const subscriptionComponents = props.currentSubscriptions.map((sub) => {
+        return <SubscriptionCard {...sub} key={sub.id} />;
+    });
     return (
         <>
-            <div className="text-3xl" ref={drop}>
+            <div className="text-xl" ref={drop}>
                 Drop Target
+                {subscriptionComponents}
             </div>
-            {subscriptionComponents}
         </>
     );
 }

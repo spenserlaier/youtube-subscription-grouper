@@ -1,0 +1,6 @@
+core app functionality
+- give users the ability to create groups of subscriptions based on their currently subscribed youtube channels
+- give users the ability to view their created groups, and upon doing so view any videos from these groups that
+they haven't already seen
+- give users the ability to edit and delete the groups they've created
+- ensure that groups are updated properly and automatically when a user unsubscribes from a channel
