@@ -9,6 +9,7 @@ import { getServerSession } from "next-auth";
 import { nextAuthOptions } from "@/utils/auth-utils";
 import { getToken } from "next-auth/jwt";
 import { headers } from "next/headers";
+import SubscriptionList from "@/components/SubscriptionList";
 export default async function Home() {
     const session = await getSession();
     const serverSession = await getServerSession(nextAuthOptions);
@@ -57,6 +58,7 @@ export default async function Home() {
                 retrieved channels:
                 {subscriptionCards}
             </div>
+            <SubscriptionList />
         </>
     );
 }
