@@ -16,5 +16,7 @@ declare module "next-auth/jwt" {
         /** OpenID ID Token */
         accessToken?: string;
         refreshToken?: string;
+        expiresAt?: number;
+        userId?: string;
     }
 }

@@ -1,8 +1,9 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
-import { subscription } from "../youtube/youtube-utils-types";
+import { Collection, MongoClient, ServerApiVersion } from "mongodb";
+import { subscription } from "@/types/youtube-utils-types";
 
-const uri = process.env.MONGODB_CONNECTION_STRING!;
-const client = new MongoClient(uri, {
+const DB_URI = process.env.MONGODB_CONNECTION_STRING!;
+const USERS_COLLECTION_NAME = "users";
+const client = new MongoClient(DB_URI, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
@@ -15,74 +16,44 @@ export function getDBClient() {
 
 type subscriptionGroup = {
     groupName: string;
-    subscriptions: [subscription];
+    subscriptions: subscription[];
 };
 
 type user = {
-    googleID: string;
     email: string;
-    subscriptionGroups: [subscriptionGroup];
+    googleID: string;
+    subscriptionGroups: subscriptionGroup[];
 };
-export async function findUser(email: string, googleID: string) {
-    try {
-        //await client.connect(); //client.connect is optional in recent mongodb versions
-        const usersCollection = client
-            .db(process.env.DATABASE_NAME)
-            .collection("users");
-        const selectedUser = await usersCollection.findOne({
-            email: email,
-            googleID: googleID,
-        });
-        return selectedUser;
-    } catch (error) {
-        console.error(
-            "something went wrong when searching for a user in the database",
-            error
-        );
-    } finally {
-        await client.close();
-    }
-}
+const usersCollection: Collection<user> = client
+    .db()
+    .collection(USERS_COLLECTION_NAME);
 
-export async function createUserIfNotExists(email: string, googleID: string) {
-    // creates user if they don't exist, otherwise returns the user
-    let selectedUser = null;
-    try {
-        //await client.connect();
-        const usersCollection = client
-            .db(process.env.DATABASE_NAME)
-            .collection("users");
-        const userExists = await usersCollection.findOne({
-            email: email,
-            googleID: googleID,
-        });
-        let selectedUser = null;
-        if (userExists !== null) {
-            console.log(
-                "Attempted to create user, but user already exists. returning user..."
-            );
-            selectedUser = userExists;
-        } else {
-            selectedUser = await usersCollection.insertOne({
-                email: email,
-                googleID: googleID,
-                subscriptionGroups: [],
-            });
-        }
-    } catch (error) {
-        console.error(
-            "something went wrong when creating a user in the database",
-            error
-        );
-    } finally {
-        await client.close();
-        return selectedUser;
-    }
+export async function createUser(user: user) {
+    const result = await usersCollection.insertOne(user);
+    console.log("inserted user into database: ", result);
+    return result;
 }
-export async function synchronizeGroups(email: string, googleID: string) {
-    //TODO: we need a function to remove subscriptions from groups when a user
-    //unsubscribes to them before visiting the application
-    //and considering this case, we also need to consider things like empty
-    //groups and so on
+export async function createUserIfNotExists(user: user) {
+    const result = await findUser(user);
+    if (!result) {
+        createUser(user);
+    }
     return null;
+}
+export async function findUser(user: user) {
+    const result = await usersCollection.findOne(user);
+    console.log("found user in the database: ", result);
+    return result;
+}
+export async function addSubscriptionGroup(
+    user: user,
+    subscriptionGroup: subscriptionGroup
+) {
+    const result = usersCollection.findOneAndUpdate(
+        { email: user.email, googleID: user.googleID },
+        { $push: { subscriptionGroups: subscriptionGroup } },
+        { returnDocument: "after" } // Optional: To return the updated document;
+    );
+    console.log("updated subscription groups for user", user.email, result);
+    return result;
 }

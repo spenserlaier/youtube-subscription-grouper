@@ -7,16 +7,19 @@ import { nextAuthOptions } from "@/utils/auth-utils";
 
 export async function GET(request: NextRequest, response: NextResponse) {
     const sessionAttempt = await getServerSession(nextAuthOptions);
+    /*
     console.log(
         "logging session retrieval attempt from subscription api: ",
         sessionAttempt,
         new Date()
     );
+    */
     const token = await getToken({ req: request });
     if (token) {
         console.log("token received.");
         console.log(`access token:  ${token.accessToken}`);
         console.log(`refresh token:  ${token.refreshToken}`);
+        console.log(`expiration date in seconds: ${token.expiresAt}`);
     }
 
     try {
@@ -59,5 +62,16 @@ export async function GET(request: NextRequest, response: NextResponse) {
         return new Response(null, {
             status: 500,
         });
+    }
+}
+
+/*
+ * takes the user's token and a subscriptiongroup object and updates
+ * that user's database document
+ */
+export async function POST(request: NextRequest, response: NextResponse) {
+    const token = await getToken({ req: request });
+    if (token) {
+        const userEmail = token.email!;
     }
 }

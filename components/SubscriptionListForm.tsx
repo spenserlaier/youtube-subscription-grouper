@@ -34,14 +34,16 @@ export default function SubscriptionListForm(props: props) {
             callback={setSelectedSubscriptions}
         />
     );
-    const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setGroupTitle(e.target.value);
+    const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setGroupTitle(event.target.value);
+    };
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
     };
     return (
         <>
             <h1>
-                {" "}
-                Group Title:{" "}
+                Group Title:
                 <input value={groupTitle} onChange={handleNameChange}></input>
             </h1>
             <div className="flex flex-row">
