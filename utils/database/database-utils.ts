@@ -3,6 +3,8 @@ import { subscription } from "@/types/youtube-utils-types";
 
 const DB_URI = process.env.MONGODB_CONNECTION_STRING!;
 const USERS_COLLECTION_NAME = "users";
+//const DB_NAME = "youtubesubscriptiongroups";
+const DB_NAME = process.env.DATABASE_NAME;
 const client = new MongoClient(DB_URI, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -14,18 +16,18 @@ export function getDBClient() {
     return client;
 }
 
-type subscriptionGroup = {
+export type subscriptionGroup = {
     groupName: string;
     subscriptions: subscription[];
 };
 
-type user = {
+export type user = {
     email: string;
     googleID: string;
     subscriptionGroups: subscriptionGroup[];
 };
 const usersCollection: Collection<user> = client
-    .db()
+    .db(DB_NAME)
     .collection(USERS_COLLECTION_NAME);
 
 export async function createUser(user: user) {

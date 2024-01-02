@@ -1,10 +1,19 @@
 "use client";
 import { useDrag, useDrop } from "react-dnd";
-import { useState, Dispatch, SetStateAction, ChangeEvent } from "react";
+import {
+    useState,
+    Dispatch,
+    SetStateAction,
+    ChangeEvent,
+    MouseEventHandler,
+    FormEvent,
+} from "react";
 import SubscriptionCard from "./SubscriptionCard";
 import { draggableCard } from "@/types/draggable";
 import { subscription } from "@/types/youtube-utils-types";
 import SubscriptionList from "./SubscriptionList";
+import { subscriptionGroup } from "@/utils/database/database-utils";
+import { headers } from "next/headers";
 
 type props = {
     //subscriptionName: string;
@@ -37,8 +46,25 @@ export default function SubscriptionListForm(props: props) {
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         setGroupTitle(event.target.value);
     };
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSubmit = async (
+        //event: React.MouseEventHandler<HTMLButtonElement>
+        event: React.MouseEventHandler<HTMLButtonElement>
+    ) => {
+        //event.preventDefault();
+        const subscriptionGroup: subscriptionGroup = {
+            groupName: groupTitle,
+            subscriptions: selectedSubscriptions,
+        };
+        const response = await fetch("/api/subscriptions", {
+            method: "POST",
+            //headers: {
+            //"Content-Type": "application/json",
+            //},
+            //headers(),
+            body: JSON.stringify({ subscriptionGroup: subscriptionGroup }),
+        });
+        console.log("tried submitting...", response.status);
+        return null;
     };
     return (
         <>
@@ -51,7 +77,16 @@ export default function SubscriptionListForm(props: props) {
                 {selectedSubscriptionsList}
             </div>
 
-            <button> Submit List </button>
+            <button
+                onClick={async (e) => {
+                    const ev =
+                        e as unknown as React.MouseEventHandler<HTMLButtonElement>;
+                    handleSubmit(ev);
+                }}
+            >
+                {" "}
+                Submit List{" "}
+            </button>
         </>
     );
 }

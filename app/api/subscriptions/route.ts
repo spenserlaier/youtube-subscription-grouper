@@ -2,8 +2,13 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { subscriptionResponse } from "@/types/youtube-utils-types";
 import nextAuth, { getServerSession } from "next-auth";
-import { NextApiRequest, NextApiResponse } from "next";
 import { nextAuthOptions } from "@/utils/auth-utils";
+import {
+    addSubscriptionGroup,
+    user,
+    subscriptionGroup,
+    createUserIfNotExists,
+} from "@/utils/database/database-utils";
 
 export async function GET(request: NextRequest, response: NextResponse) {
     const sessionAttempt = await getServerSession(nextAuthOptions);
@@ -69,9 +74,38 @@ export async function GET(request: NextRequest, response: NextResponse) {
  * takes the user's token and a subscriptiongroup object and updates
  * that user's database document
  */
+
+//type addRequestBody = {
+//body: { subscriptionGroup: subscriptionGroup };
+//};
 export async function POST(request: NextRequest, response: NextResponse) {
     const token = await getToken({ req: request });
+    console.log("entering function");
+    const subscriptionGroup: subscriptionGroup = await request.json();
+    //const subscriptionGroup = requestJSON.body;
+
+    console.log("made json");
+
     if (token) {
+        const user: user = {
+            email: token.email!,
+            googleID: token.userId!,
+            subscriptionGroups: [],
+        };
+        const dbUser = createUserIfNotExists(user);
         const userEmail = token.email!;
+        try {
+            //const user = await
+            const result = await addSubscriptionGroup(user, subscriptionGroup);
+            console.log("succesfully created group");
+            return new Response(null, {
+                status: 200,
+            });
+        } catch (error) {
+            console.error("Error when adding subscriptionGroup: ", error);
+            return new Response(null, {
+                status: 500,
+            });
+        }
     }
 }

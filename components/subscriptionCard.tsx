@@ -20,10 +20,10 @@ export default function SubscriptionCard(props: subscription) {
         end: (item, monitor) => {
             if (!monitor.didDrop()) {
                 // The item was not dropped onto a valid target
-                console.log("Drag ended, but not dropped onto a valid target");
+                //console.log("Drag ended, but not dropped onto a valid target");
                 // Perform actions or cleanup for unsuccessful drop
             } else {
-                console.log("Drag ended on a successful drop target");
+                //console.log("Drag ended on a successful drop target");
             }
         },
     }));

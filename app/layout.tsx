@@ -6,6 +6,7 @@ import CustomDndProvider from "@/components/CustomDndProvider";
 //import { HTML5Backend } from "react-dnd-html5-backend";
 import CustomHtml5Backend from "@/components/CustomHtml5Backend";
 import "./globals.css";
+import Header from "@/components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,10 @@ export default function RootLayout({
         <NextAuthProvider>
             <CustomDndProvider backend={CustomHtml5Backend}>
                 <html lang="en">
-                    <body className={inter.className}>{children}</body>
+                    <body className={inter.className}>
+                        <Header />
+                        {children}
+                    </body>
                 </html>
             </CustomDndProvider>
         </NextAuthProvider>
