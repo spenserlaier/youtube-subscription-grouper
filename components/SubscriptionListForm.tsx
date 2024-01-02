@@ -57,11 +57,11 @@ export default function SubscriptionListForm(props: props) {
         };
         const response = await fetch("/api/subscriptions", {
             method: "POST",
-            //headers: {
-            //"Content-Type": "application/json",
-            //},
+            headers: {
+                "Content-Type": "application/json",
+            },
             //headers(),
-            body: JSON.stringify({ subscriptionGroup: subscriptionGroup }),
+            body: JSON.stringify(subscriptionGroup),
         });
         console.log("tried submitting...", response.status);
         return null;

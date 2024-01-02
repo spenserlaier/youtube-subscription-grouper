@@ -51,7 +51,7 @@ export async function addSubscriptionGroup(
     user: user,
     subscriptionGroup: subscriptionGroup
 ) {
-    const result = usersCollection.findOneAndUpdate(
+    const result = await usersCollection.findOneAndUpdate(
         { email: user.email, googleID: user.googleID },
         { $push: { subscriptionGroups: subscriptionGroup } },
         { returnDocument: "after" } // Optional: To return the updated document;

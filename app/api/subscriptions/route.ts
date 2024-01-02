@@ -85,8 +85,13 @@ export async function POST(request: NextRequest, response: NextResponse) {
     //const subscriptionGroup = requestJSON.body;
 
     console.log("made json");
+    console.log(token);
+    console.log("end");
 
     if (token) {
+        if (!token.userId) {
+            console.log("token is undefined. why?");
+        }
         const user: user = {
             email: token.email!,
             googleID: token.userId!,

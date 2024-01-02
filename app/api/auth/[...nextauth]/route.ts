@@ -29,17 +29,33 @@ export const nextAuthOptions: AuthOptions = {
     ],
     callbacks: {
         async jwt({ token, account, profile }) {
+            console.log("token", token);
+            console.log("account", account);
+            console.log("profile", profile);
+            let expiresAt = 0;
             if (account) {
+                console.log("logging account", account);
                 token.accessToken = account.access_token; // Store the provider's access token in the token so that we can put it in the session in the session callback above
                 token.refreshToken = account.refresh_token;
-                token.userId = account.userId;
+                //token.userId = account.userId;
+                token.userId = account.providerAccountId;
+                /*
                 token.expiresAt = Math.floor(
                     Date.now() / 1000 + account.expires_at!
                 );
+                */
+                token.expiresAt = account.expires_at!;
                 return token;
-            } else if (Date.now() < token.expiresAt! * 1000) {
+                //} else if (Date.now() < token.expiresAt! * 1000) {
+            } else if (Date.now() / 1000 < token.expiresAt!) {
+                console.log(
+                    `token still valid. current time: ${
+                        Date.now() / 1000
+                    } expiration time: ${token.expiresAt}`
+                );
                 return token;
             } else {
+                console.log("token invalid. requesting another");
                 try {
                     // https://accounts.google.com/.well-known/openid-configuration
                     // We need the `token_endpoint`.
