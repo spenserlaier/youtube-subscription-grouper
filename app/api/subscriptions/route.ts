@@ -9,6 +9,7 @@ import {
     subscriptionGroup,
     createUserIfNotExists,
 } from "@/utils/database/database-utils";
+import { getUserSubscriptions } from "@/utils/google-api-calls";
 
 //for testing purposes: channel id here UCVY-2RcKZzDjbaWO3jqcRDA
 export async function GET(request: NextRequest, response: NextResponse) {
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         new Date()
     );
     */
+    console.log("logging request for subscriptions here");
     const token = await getToken({ req: request });
     if (token) {
         console.log("token received.");
@@ -27,44 +29,15 @@ export async function GET(request: NextRequest, response: NextResponse) {
         console.log(`refresh token:  ${token.refreshToken}`);
         console.log(`expiration date in seconds: ${token.expiresAt}`);
     }
-
     try {
-        let fetchURL = "";
-        let maxResults = "50"; //it seems the max results per page is 50, even if we set it higher
-        const currentURL = request.url;
-        const urlParams = new URLSearchParams(currentURL);
-        const pageToken = request.nextUrl.searchParams.get("pageToken");
-        //const pageToken = request.query.pageToken;
-        if (pageToken == null) {
-            fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}`;
-        } else {
-            fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}&pageToken=${pageToken}`;
-        }
-        let accessToken = null;
-        if (token) {
-            accessToken = token.accessToken;
-        }
-        const subscriptionResponse = await fetch(fetchURL, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                Accept: "application/json",
-            },
-        });
-        if (!subscriptionResponse.ok) {
-            console.error("Something went wrong when requesting subscriptions");
-            //console.error(subscriptionResponse);
-            return new Response(null, {
-                status: 400,
-            });
-        }
-        const subscriptionData: subscriptionResponse =
-            await subscriptionResponse.json();
+        const subscriptionData = await getUserSubscriptions(
+            null,
+            token!.accessToken!,
+            50
+        );
         return Response.json(subscriptionData);
     } catch (error) {
-        console.error(
-            "Internal Error when fetching subscribed channels:",
-            error
-        );
+        console.log("error with utils google api call...");
         return new Response(null, {
             status: 500,
         });
