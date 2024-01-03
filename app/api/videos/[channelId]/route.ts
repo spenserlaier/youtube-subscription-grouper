@@ -1,6 +1,11 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { channel, subscriptionResponse } from "@/types/youtube-utils-types";
+import {
+    channel,
+    playlistItem,
+    subscriptionResponse,
+    video,
+} from "@/types/youtube-utils-types";
 import nextAuth, { getServerSession } from "next-auth";
 import { nextAuthOptions } from "@/utils/auth-utils";
 import {
@@ -41,8 +46,51 @@ export async function GET(
 
         console.log("printing the playlist data...", channelData);
         const channel: channel = channelData.items[0];
-        console.log("logging snippet", channel.contentDetails);
-        const uploadsPlaylist = channel.contentDetails.relatedPlaylists.uploads;
+        console.log("logging contendetails", channel.contentDetails);
+        const uploadsPlaylistId =
+            channel.contentDetails.relatedPlaylists.uploads;
+        const playlistVideosResponse = await fetch(
+            `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${uploadsPlaylistId}&key=${token.accessToken}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token.accessToken}`,
+                    Accept: "application/json",
+                },
+            }
+        );
+        const playlistVideosData = await playlistVideosResponse.json();
+        console.log(
+            "logging data retrieved via uploads playlist id: ",
+            playlistVideosData
+        );
+        //console.log(playlistVideosData);
+        const playlistVideos: playlistItem[] = playlistVideosData.items;
+        let gotVideo = false;
+        for (const item of playlistVideos) {
+            //console.log("uploaded video snippet: ", item.snippet);
+            if (item.contentDetails) {
+                const videoId = item.contentDetails.videoId; // the id of the video. which can then be accessed via
+                // a video query to the api
+                //console.log(item.snippet);
+                if (!gotVideo) {
+                    const videoResponse = await fetch(
+                        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${token.accessToken}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token.accessToken}`,
+                                Accept: "application/json",
+                            },
+                        }
+                    );
+                    const videoData = await videoResponse.json();
+                    const singleVideo: video = videoData.items[0];
+                    console.log("video data: ", videoData);
+                    console.log("single video json: ", singleVideo);
+                    gotVideo = true;
+                }
+            }
+        }
+        //  'https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=Ks-_Mh1QhMc&key=[YOUR_API_KEY]' \
     }
 }
 
