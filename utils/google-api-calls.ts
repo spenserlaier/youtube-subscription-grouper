@@ -1,3 +1,5 @@
+import { channel, playlistItem, video } from "@/types/youtube-utils-types";
+
 export async function getChannelDataById(
     channelId: string,
     accessToken: string
@@ -14,8 +16,9 @@ export async function getChannelDataById(
         //`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true&key=${token.accessToken}`
     );
     if (channelResponse.status === 200) {
-        const channelData = await channelResponse.json();
-        return channelData;
+        const channelResponseData = await channelResponse.json();
+        const channel: channel = channelResponseData.items[0];
+        return channel;
     }
     console.error(
         "something went wrong when retrieving channel data (utils/googleapicalls/getchanneldatabyId)"
@@ -35,7 +38,8 @@ export async function getPlaylistById(playlistId: string, accessToken: string) {
     );
     if (playlistVideosResponse.status === 200) {
         const playlistData = await playlistVideosResponse.json();
-        return playlistData;
+        const playlist: playlistItem = playlistData.items[0];
+        return playlist;
     }
     console.error(
         "something went wrong when retrieving playlist data (utils/googleapicalls/getplaylistbyid)"
@@ -54,7 +58,8 @@ export async function getVideoById(videoId: string, accessToken: string) {
     );
     if (videoResponse.status === 200) {
         const videoData = await videoResponse.json();
-        return videoData;
+        const video: video = videoData.items[0];
+        return video;
     }
     console.error(
         "something went wrong when retrieving video data (utils/googleapicalls/getvideobyid)"
