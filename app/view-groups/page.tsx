@@ -1,6 +1,7 @@
 import { subscriptionGroup } from "@/utils/database/database-utils";
 import { getToken } from "next-auth/jwt";
 import { headers } from "next/headers";
+import Link from "next/link";
 
 export default async function ViewGroups() {
     const groupsResponse = await fetch(
@@ -12,7 +13,12 @@ export default async function ViewGroups() {
     );
     const subscriptionGroups: subscriptionGroup[] = await groupsResponse.json();
     const groupComponents = subscriptionGroups.map((group) => (
-        <div key={group.groupName}>{group.groupName}</div>
+        <Link
+            href={`/view-groups/${group.id!.toString()}`}
+            key={group.groupName}
+        >
+            <div>{group.groupName}</div>
+        </Link>
     ));
     return (
         <>

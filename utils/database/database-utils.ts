@@ -1,4 +1,4 @@
-import { Collection, MongoClient, ServerApiVersion } from "mongodb";
+import { Collection, MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import { subscription } from "@/types/youtube-utils-types";
 
 const DB_URI = process.env.MONGODB_CONNECTION_STRING!;
@@ -19,6 +19,7 @@ export function getDBClient() {
 export type subscriptionGroup = {
     groupName: string;
     subscriptions: subscription[];
+    id?: ObjectId;
 };
 
 export type user = {
@@ -66,11 +67,25 @@ export async function addSubscriptionGroup(
     user: user,
     subscriptionGroup: subscriptionGroup
 ) {
-    const result = await usersCollection.findOneAndUpdate(
-        { email: user.email, googleID: user.googleID },
-        { $push: { subscriptionGroups: subscriptionGroup } },
-        { returnDocument: "after" } // Optional: To return the updated document;
-    );
-    console.log("updated subscription groups for user", user.email, result);
-    return result;
+    subscriptionGroup.id = new ObjectId();
+    const existingGroups = await getUserGroups(user);
+    let groupNames: string[] = [];
+    if (existingGroups) {
+        groupNames = existingGroups.map((group) => group.groupName);
+    }
+    if (!groupNames.includes(subscriptionGroup.groupName)) {
+        const result = await usersCollection.findOneAndUpdate(
+            { email: user.email, googleID: user.googleID },
+            { $push: { subscriptionGroups: subscriptionGroup } },
+            { returnDocument: "after" } // Optional: To return the updated document;
+        );
+        console.log("inserted new group for user: ", user.email, result);
+        return result;
+    } else {
+        console.log(
+            "already found a matching name for user ",
+            user.email,
+            " can't insert group"
+        );
+    }
 }

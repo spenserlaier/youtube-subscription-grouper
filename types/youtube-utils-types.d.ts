@@ -13,7 +13,14 @@ export type subscription = {
         };
         channelId: string;
         thumbnails: {
+            /*
             (key): {
+                url: string;
+                width: number;
+                height: number;
+            };
+            */
+            [key: string]: {
                 url: string;
                 width: number;
                 height: number;
