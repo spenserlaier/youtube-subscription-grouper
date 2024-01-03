@@ -26,6 +26,10 @@ export type user = {
     googleID: string;
     subscriptionGroups: subscriptionGroup[];
 };
+export type userCredentials = {
+    email: string;
+    googleID: string;
+};
 const usersCollection: Collection<user> = client
     .db(DB_NAME)
     .collection(USERS_COLLECTION_NAME);
@@ -42,10 +46,21 @@ export async function createUserIfNotExists(user: user) {
     }
     return null;
 }
-export async function findUser(user: user) {
-    const result = await usersCollection.findOne(user);
+export async function findUser(userCredentials: userCredentials) {
+    const result = await usersCollection.findOne(userCredentials);
     console.log("found user in the database: ", result);
     return result;
+}
+
+export async function getUserGroups(userCredentials: userCredentials) {
+    const userDocument = await usersCollection.findOne(userCredentials);
+    if (userDocument) {
+        const subscriptionGroups = userDocument.subscriptionGroups;
+        return subscriptionGroups;
+    } else {
+        console.error("couldn't find user with credentials: ", userCredentials);
+        return null;
+    }
 }
 export async function addSubscriptionGroup(
     user: user,
