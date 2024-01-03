@@ -26,7 +26,10 @@ export async function getChannelDataById(
     return null;
 }
 
-export async function getPlaylistById(playlistId: string, accessToken: string) {
+export async function getVideosByPlaylistId(
+    playlistId: string,
+    accessToken: string
+) {
     const playlistVideosResponse = await fetch(
         `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${accessToken}`,
         {
@@ -38,8 +41,8 @@ export async function getPlaylistById(playlistId: string, accessToken: string) {
     );
     if (playlistVideosResponse.status === 200) {
         const playlistData = await playlistVideosResponse.json();
-        const playlist: playlistItem = playlistData.items[0];
-        return playlist;
+        const playlistItems: playlistItem[] = playlistData.items;
+        return playlistItems;
     }
     console.error(
         "something went wrong when retrieving playlist data (utils/googleapicalls/getplaylistbyid)"

@@ -14,6 +14,11 @@ import {
     subscriptionGroup,
     createUserIfNotExists,
 } from "@/utils/database/database-utils";
+import {
+    getChannelDataById,
+    getVideosByPlaylistId,
+    getVideoById,
+} from "@/utils/google-api-calls";
 
 // test channel id: UCVY-2RcKZzDjbaWO3jqcRDA
 
@@ -28,64 +33,40 @@ export async function GET(
             googleID: token.userId!,
             subscriptionGroups: [],
         };
-        const channelResponse = await fetch(
-            //`https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&mine=true&key=${token.accessToken}`,
-            //`https://youtube.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&maxResults=25&mine=true&key=${token.acessToken}`,
-            `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${params.channelId}&key=${token.accessToken}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token.accessToken}`,
-                    Accept: "application/json",
-                },
-            }
-
-            //`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true&key=${token.accessToken}`
+        const channel = await getChannelDataById(
+            params.channelId,
+            token.accessToken!
         );
-        const channelData = await channelResponse.json();
-        // UCHH-ybUwH1CfJrXxnqw6Ljw
-
-        console.log("printing the playlist data...", channelData);
-        const channel: channel = channelData.items[0];
-        console.log("logging contendetails", channel.contentDetails);
+        //console.log("printing the playlist data...", channel);
+        //console.log("logging contendetails", channel!.contentDetails);
         const uploadsPlaylistId =
-            channel.contentDetails.relatedPlaylists.uploads;
-        const playlistVideosResponse = await fetch(
-            `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${uploadsPlaylistId}&key=${token.accessToken}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token.accessToken}`,
-                    Accept: "application/json",
-                },
-            }
+            channel!.contentDetails.relatedPlaylists.uploads;
+        const playlistVideos = await getVideosByPlaylistId(
+            uploadsPlaylistId,
+            token.accessToken!
         );
-        const playlistVideosData = await playlistVideosResponse.json();
-        console.log(
-            "logging data retrieved via uploads playlist id: ",
-            playlistVideosData
-        );
+        //        console.log(
+        //            "logging data retrieved via uploads playlist id: ",
+        //            playlistVideos
+        //        );
         //console.log(playlistVideosData);
-        const playlistVideos: playlistItem[] = playlistVideosData.items;
         let gotVideo = false;
-        for (const item of playlistVideos) {
+        console.log("just before the for loop...");
+        for (const item of playlistVideos!) {
+            //console.log("within for loop");
             //console.log("uploaded video snippet: ", item.snippet);
             if (item.contentDetails) {
                 const videoId = item.contentDetails.videoId; // the id of the video. which can then be accessed via
                 // a video query to the api
                 //console.log(item.snippet);
                 if (!gotVideo) {
-                    const videoResponse = await fetch(
-                        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${token.accessToken}`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token.accessToken}`,
-                                Accept: "application/json",
-                            },
-                        }
+                    console.log("about to retrieve video here");
+                    const video = await getVideoById(
+                        videoId,
+                        token.accessToken!
                     );
-                    const videoData = await videoResponse.json();
-                    const singleVideo: video = videoData.items[0];
-                    console.log("video data: ", videoData);
-                    console.log("single video json: ", singleVideo);
+                    console.log("logging the video...");
+                    console.log("video data: ", video);
                     gotVideo = true;
                 }
             }
