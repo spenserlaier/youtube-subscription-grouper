@@ -29,6 +29,7 @@ export default async function ViewGroupWithId({
                     <div key={sub.id}>
                         <div>{sub.snippet.title}</div>
                         <div>{sub.snippet.description}</div>
+                        <div>{sub.snippet.resourceId.channelId}</div>
                         <div>
                             <Image
                                 width={25}

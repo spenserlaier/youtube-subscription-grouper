@@ -10,6 +10,7 @@ import {
     createUserIfNotExists,
 } from "@/utils/database/database-utils";
 
+//for testing purposes: channel id here UCVY-2RcKZzDjbaWO3jqcRDA
 export async function GET(request: NextRequest, response: NextResponse) {
     const sessionAttempt = await getServerSession(nextAuthOptions);
     /*
