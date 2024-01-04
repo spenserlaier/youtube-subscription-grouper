@@ -1,0 +1,88 @@
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import { subscriptionResponse } from "@/types/youtube-utils-types";
+import nextAuth, { getServerSession } from "next-auth";
+import { nextAuthOptions } from "@/utils/auth-utils";
+import {
+    addSubscriptionGroup,
+    user,
+    subscriptionGroup,
+    createUserIfNotExists,
+} from "@/utils/database/database-utils";
+import { getUserSubscriptions } from "@/utils/google-api-calls";
+
+//for testing purposes: channel id here UCVY-2RcKZzDjbaWO3jqcRDA
+export async function GET(request: NextRequest, response: NextResponse) {
+    const sessionAttempt = await getServerSession(nextAuthOptions);
+    /*
+    console.log(
+        "logging session retrieval attempt from subscription api: ",
+        sessionAttempt,
+        new Date()
+    );
+    */
+    //console.log("logging request for subscriptions here");
+    const token = await getToken({ req: request });
+    /*
+    if (token) {
+        console.log("token received.");
+        console.log(`access token:  ${token.accessToken}`);
+        console.log(`refresh token:  ${token.refreshToken}`);
+        console.log(`expiration date in seconds: ${token.expiresAt}`);
+    }
+    */
+    try {
+        const subscriptionData = await getUserSubscriptions(
+            null,
+            token!.accessToken!,
+            50
+        );
+        return Response.json(subscriptionData);
+    } catch (error) {
+        console.log("error with utils google api call...");
+        return new Response(null, {
+            status: 500,
+        });
+    }
+}
+
+/*
+ * takes the user's token and a subscriptiongroup object and updates
+ * that user's database document
+ */
+
+//type addRequestBody = {
+//body: { subscriptionGroup: subscriptionGroup };
+//};
+export async function POST(request: NextRequest, response: NextResponse) {
+    const token = await getToken({ req: request });
+    console.log("entering function");
+    const subscriptionGroup: subscriptionGroup = await request.json();
+    //const subscriptionGroup = requestJSON.body;
+
+    if (token) {
+        if (!token.userId) {
+            console.log("token is undefined. why?");
+        }
+        const user: user = {
+            email: token.email!,
+            googleID: token.userId!,
+            subscriptionGroups: [],
+        };
+        const dbUser = createUserIfNotExists(user);
+        const userEmail = token.email!;
+        try {
+            //const user = await
+            const result = await addSubscriptionGroup(user, subscriptionGroup);
+            console.log("succesfully created group");
+            return new Response(null, {
+                status: 200,
+            });
+        } catch (error) {
+            console.error("Error when adding subscriptionGroup: ", error);
+            return new Response(null, {
+                status: 500,
+            });
+        }
+    }
+}
