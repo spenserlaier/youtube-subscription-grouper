@@ -13,33 +13,19 @@ import { getUserSubscriptions } from "@/utils/google-api-calls";
 
 //for testing purposes: channel id here UCVY-2RcKZzDjbaWO3jqcRDA
 export async function GET(request: NextRequest, response: NextResponse) {
-    const sessionAttempt = await getServerSession(nextAuthOptions);
-    /*
-    console.log(
-        "logging session retrieval attempt from subscription api: ",
-        sessionAttempt,
-        new Date()
-    );
-    */
-    //console.log("logging request for subscriptions here");
     const token = await getToken({ req: request });
-    /*
-    if (token) {
-        console.log("token received.");
-        console.log(`access token:  ${token.accessToken}`);
-        console.log(`refresh token:  ${token.refreshToken}`);
-        console.log(`expiration date in seconds: ${token.expiresAt}`);
-    }
-    */
     try {
+        const pageToken = request.nextUrl.searchParams.get("pageToken");
+        //TODO: get rid of undefined, just make the function accept null or string valued pagetokens below
+        console.log("logging pagetoken from api query parameters", pageToken);
         const subscriptionData = await getUserSubscriptions(
-            null,
+            pageToken,
             token!.accessToken!,
             50
         );
         return Response.json(subscriptionData);
     } catch (error) {
-        console.log("error with utils google api call...");
+        console.log("error with utils google api call...", error);
         return new Response(null, {
             status: 500,
         });

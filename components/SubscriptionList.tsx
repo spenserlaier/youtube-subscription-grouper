@@ -37,9 +37,13 @@ export default function SubscriptionList(props: props) {
             });
         },
     }));
-    const subscriptionComponents = props.currentSubscriptions.map((sub) => {
-        return <SubscriptionCard {...sub} key={sub.id} />;
-    });
+    let subscriptionComponents = null;
+    if (props.currentSubscriptions) {
+        subscriptionComponents = props.currentSubscriptions.map((sub) => {
+            return <SubscriptionCard {...sub} key={sub.id} />;
+        });
+    }
+
     return (
         <>
             <div className="text-xl" ref={drop}>

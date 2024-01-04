@@ -76,11 +76,13 @@ export async function getUserSubscriptions(
     maxResults = 50
 ) {
     let fetchURL = "";
-    if (pageToken == null) {
+    if (pageToken == null || pageToken === "null") {
         fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}`;
     } else {
+        console.log("proceeding with the following page token: ", pageToken);
         fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}&pageToken=${pageToken}`;
     }
+
     const subscriptionResponse = await fetch(fetchURL, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -89,10 +91,14 @@ export async function getUserSubscriptions(
     });
     if (subscriptionResponse.status == 200) {
         const subscriptionData = await subscriptionResponse.json();
+        console.log("successfully retrieved subscriptions...");
         return subscriptionData;
     }
     console.error(
-        "error when retrieving user subscriptions (source: utils/googleapicalls/getusersubscriptions)"
+        "error when retrieving user subscriptions (source: utils/googleapicalls/getusersubscriptions)",
+        subscriptionResponse.statusText
     );
+    const json = await subscriptionResponse.json();
+    console.log("logging error from usersubscriptions: ", json);
     return null;
 }

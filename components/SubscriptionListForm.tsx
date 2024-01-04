@@ -7,10 +7,14 @@ import {
     ChangeEvent,
     MouseEventHandler,
     FormEvent,
+    useEffect,
 } from "react";
 import SubscriptionCard from "./SubscriptionCard";
 import { draggableCard } from "@/types/draggable";
-import { subscription } from "@/types/youtube-utils-types";
+import {
+    subscription,
+    subscriptionResponse,
+} from "@/types/youtube-utils-types";
 import SubscriptionList from "./SubscriptionList";
 import { subscriptionGroup } from "@/utils/database/database-utils";
 import { headers } from "next/headers";
@@ -28,10 +32,44 @@ export default function SubscriptionListForm(props: props) {
     const [selectedSubscriptions, setSelectedSubscriptions] = useState<
         subscription[]
     >([]);
+    const [allSubscriptions, setAllSubscriptions] = useState<subscription[]>(
+        []
+    );
+    const [fetchNextPage, setFetchNextPage] = useState(true);
+    const [subscriptionResponse, setSubscriptionResponse] =
+        useState<subscriptionResponse | null>(null);
+
+    useEffect(() => {
+        const fetchSubscriptionData = async () => {
+            if (fetchNextPage) {
+                const pageToken = subscriptionResponse
+                    ? subscriptionResponse.nextPageToken
+                    : null;
+                //TODO: try/catch
+                const response = await fetch(
+                    "/api/subscriptions?pageToken=" + pageToken,
+                    {
+                        headers: {
+                            method: "GET",
+                        },
+                    }
+                );
+                const data = await response.json();
+                //console.log("logging data from subscription api call...", data);
+                setSubscriptionResponse(data);
+            }
+            setFetchNextPage(false);
+        };
+        fetchSubscriptionData();
+    }, [fetchNextPage, subscriptionResponse]);
+
     const [groupTitle, setGroupTitle] = useState<string>("");
+
     const allSubscriptionsList = (
         <SubscriptionList
-            currentSubscriptions={props.initialSubscriptions}
+            currentSubscriptions={
+                subscriptionResponse ? subscriptionResponse.items : []
+            }
             canModify={false}
             callback={setSelectedSubscriptions}
         />

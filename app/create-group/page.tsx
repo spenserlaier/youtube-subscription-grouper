@@ -35,6 +35,7 @@ export default async function CreateGroup() {
         subscriptionCards = subscriptions.map((sub) => {
             return <SubscriptionCard {...sub} key={sub.id} />;
         });
+        //console.log(subscribedChannelsJSON);
     } else {
         console.log("couldn't get subscriptions. something went wrong");
     }
@@ -45,7 +46,7 @@ export default async function CreateGroup() {
                 Total Subscribed Channels Found:{" "}
                 {subscriptionCount ? subscriptionCount : 0}
             </div>
-            <SubscriptionListForm initialSubscriptions={subscriptions} />
+            <SubscriptionListForm initialSubscriptions={[] /*subscriptions*/} />
         </>
     );
 }
