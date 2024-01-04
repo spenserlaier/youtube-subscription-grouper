@@ -2,6 +2,7 @@ import { playlistItem } from "@/types/youtube-utils-types";
 import { subscriptionGroup } from "@/utils/database/database-utils";
 import { headers } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
 import { ReactElement } from "react";
 
 export default async function ViewGroupWithId({
@@ -41,15 +42,21 @@ export default async function ViewGroupWithId({
             }
             uploadsComponents = channelUploads.map((playlist) => {
                 const videos = playlist.map((v) => {
+                    let watchURL =
+                        process.env.URL +
+                        `/videos/${v.snippet.resourceId.videoId}`;
+                    console.log("url generated: ", watchURL);
                     return (
-                        <div key={v.id}>
-                            {v.snippet.title}
-                            <Image
-                                width={88}
-                                height={88}
-                                src={v.snippet.thumbnails["default"].url}
-                                alt={`thumbnail for ${v.snippet.title}`}
-                            ></Image>
+                        <div key={v.id} className="flex flex-row">
+                            <Link href={watchURL}>
+                                {v.snippet.title}
+                                <Image
+                                    width={88}
+                                    height={88}
+                                    src={v.snippet.thumbnails["default"].url}
+                                    alt={`thumbnail for ${v.snippet.title}`}
+                                ></Image>
+                            </Link>
                         </div>
                     );
                 });
