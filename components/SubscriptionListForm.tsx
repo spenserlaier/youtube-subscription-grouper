@@ -2,6 +2,7 @@
 import { useDrag, useDrop } from "react-dnd";
 import {
     useState,
+    useRef,
     Dispatch,
     SetStateAction,
     ChangeEvent,
@@ -38,6 +39,32 @@ export default function SubscriptionListForm(props: props) {
     const [fetchNextPage, setFetchNextPage] = useState(true);
     const [subscriptionResponse, setSubscriptionResponse] =
         useState<subscriptionResponse | null>(null);
+    const sourceListRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const handleScroll = () => {
+            const listContainer = sourceListRef.current;
+            if (listContainer) {
+                const scrollPosition =
+                    listContainer.scrollTop + listContainer.clientHeight;
+                const totalHeight = listContainer.scrollHeight;
+
+                // Check if the user has reached the bottom (or near the bottom with some threshold)
+                if (scrollPosition >= totalHeight - 20) {
+                    console.log("Reached the bottom!");
+                    // Do something when the user reaches the bottom
+                }
+            }
+        };
+        const container = sourceListRef.current;
+        if (container) {
+            container.addEventListener("scroll", handleScroll);
+
+            return () => {
+                // Clean up the event listener when the component unmounts
+                container.removeEventListener("scroll", handleScroll);
+            };
+        }
+    });
 
     useEffect(() => {
         const fetchSubscriptionData = async () => {
@@ -66,13 +93,15 @@ export default function SubscriptionListForm(props: props) {
     const [groupTitle, setGroupTitle] = useState<string>("");
 
     const allSubscriptionsList = (
-        <SubscriptionList
-            currentSubscriptions={
-                subscriptionResponse ? subscriptionResponse.items : []
-            }
-            canModify={false}
-            callback={setSelectedSubscriptions}
-        />
+        <div className="overflow-auto max-h-64" ref={sourceListRef}>
+            <SubscriptionList
+                currentSubscriptions={
+                    subscriptionResponse ? subscriptionResponse.items : []
+                }
+                canModify={false}
+                callback={setSelectedSubscriptions}
+            />
+        </div>
     );
     const selectedSubscriptionsList = (
         <SubscriptionList
