@@ -86,6 +86,9 @@ export default function SubscriptionListForm(props: props) {
             }
         };
         fetchSubscriptionData();
+        return () => {
+            isMounted = false;
+        };
     });
     //}, [fetchNextPage, subscriptionResponse]);
 
