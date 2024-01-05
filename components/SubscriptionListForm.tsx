@@ -52,6 +52,7 @@ export default function SubscriptionListForm(props: props) {
                 if (scrollPosition >= totalHeight - 20) {
                     console.log("Reached the bottom!");
                     // Do something when the user reaches the bottom
+                    setFetchNextPage(true);
                 }
             }
         };
@@ -67,6 +68,7 @@ export default function SubscriptionListForm(props: props) {
     });
 
     useEffect(() => {
+        let isMounted = true;
         const fetchSubscriptionData = async () => {
             if (fetchNextPage) {
                 const pageToken = subscriptionResponse
@@ -83,11 +85,23 @@ export default function SubscriptionListForm(props: props) {
                 );
                 const data = await response.json();
                 //console.log("logging data from subscription api call...", data);
-                setSubscriptionResponse(data);
+                if (isMounted) {
+                    console.log("we are mounted");
+                    setSubscriptionResponse(data);
+                    console.log("loggind retrieved data...", data);
+                    setAllSubscriptions((subs) => {
+                        return [...subs, ...data.items];
+                    });
+                }
             }
             setFetchNextPage(false);
         };
         fetchSubscriptionData();
+        return () => {
+            isMounted = false;
+            //setSubscriptionResponse(null);
+            //setAllSubscriptions([]);
+        };
     }, [fetchNextPage, subscriptionResponse]);
 
     const [groupTitle, setGroupTitle] = useState<string>("");
@@ -96,7 +110,8 @@ export default function SubscriptionListForm(props: props) {
         <div className="overflow-auto max-h-64" ref={sourceListRef}>
             <SubscriptionList
                 currentSubscriptions={
-                    subscriptionResponse ? subscriptionResponse.items : []
+                    //subscriptionResponse ? subscriptionResponse.items : []
+                    allSubscriptions
                 }
                 canModify={false}
                 callback={setSelectedSubscriptions}
