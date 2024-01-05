@@ -33,7 +33,9 @@ export default function VideoList(props: props) {
     return (
         <>
             <div>this is a placeholder for the video list component</div>
-            {videoComponents}
+            <div className="max-h-64 max-w-64 overflow-auto">
+                {videoComponents}
+            </div>
         </>
     );
 }

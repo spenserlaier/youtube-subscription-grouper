@@ -29,14 +29,15 @@ export async function getChannelDataById(
 export async function getVideosByPlaylistId(
     playlistId: string,
     accessToken: string,
-    pageToken: string | null = null
+    pageToken: string | null = null,
+    maxResults: number = 20 //max of 50
 ) {
     console.log("getting videos by playlist id...");
     let fetchURL = "";
     if (pageToken && pageToken != "null") {
-        fetchURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${accessToken}&pageToken=${pageToken}`;
+        fetchURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=${maxResults}&playlistId=${playlistId}&key=${accessToken}&pageToken=${pageToken}`;
     } else {
-        fetchURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${accessToken}`;
+        fetchURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=${maxResults}&playlistId=${playlistId}&key=${accessToken}`;
     }
     const playlistVideosResponse = await fetch(fetchURL, {
         headers: {
