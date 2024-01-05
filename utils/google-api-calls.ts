@@ -46,8 +46,9 @@ export async function getVideosByPlaylistId(
     });
     if (playlistVideosResponse.status === 200) {
         const playlistData = await playlistVideosResponse.json();
-        const playlistItems: playlistItem[] = playlistData.items;
-        return playlistItems;
+        //const playlistItems: playlistItem[] = playlistData.items;
+        //return playlistItems;
+        return playlistData;
     }
     console.error(
         "something went wrong when retrieving playlist data (utils/googleapicalls/getplaylistbyid)"

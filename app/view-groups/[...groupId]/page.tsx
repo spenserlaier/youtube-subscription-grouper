@@ -1,4 +1,4 @@
-import { playlistItem } from "@/types/youtube-utils-types";
+import { playlistItem, video } from "@/types/youtube-utils-types";
 import { subscriptionGroup } from "@/utils/database/database-utils";
 import { headers } from "next/headers";
 import Image from "next/image";
@@ -37,7 +37,8 @@ export default async function ViewGroupWithId({
                         headers: headers(),
                     }
                 );
-                const uploads: playlistItem[] = await uploadsData.json();
+                const uploadsResponse = await uploadsData.json();
+                const uploads: playlistItem[] = uploadsResponse.items;
                 channelUploads.push(uploads);
             }
             uploadsComponents = channelUploads.map((playlist) => {

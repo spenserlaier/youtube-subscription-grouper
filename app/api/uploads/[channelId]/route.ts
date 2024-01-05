@@ -39,9 +39,11 @@ export async function GET(
         );
         const uploadsPlaylistId =
             channel!.contentDetails.relatedPlaylists.uploads;
+        const pageToken = request.nextUrl.searchParams.get("pageToken");
         const playlistVideos = await getVideosByPlaylistId(
             uploadsPlaylistId,
-            token.accessToken!
+            token.accessToken!,
+            pageToken
         );
         console.log("retrieved playlist videos...", playlistVideos);
         return Response.json(playlistVideos);
