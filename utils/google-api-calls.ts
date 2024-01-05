@@ -30,7 +30,7 @@ export async function getVideosByPlaylistId(
     playlistId: string,
     accessToken: string,
     pageToken: string | null = null,
-    maxResults: number = 20 //max of 50
+    maxResults: number = 5 //max of 50
 ) {
     console.log("getting videos by playlist id...");
     let fetchURL = "";

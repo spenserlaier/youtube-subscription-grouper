@@ -12,6 +12,7 @@ export default function VideoList(props: props) {
     const [fetchNextPage, setFetchNextPage] = useState(true);
     const [videos, setVideos] = useState<video[]>([]);
     useEffect(() => {
+        let isMounted = true;
         const updateResults = async () => {
             if (fetchNextPage) {
                 const uploadsURL = `/api/uploads/${props.channelId}?pageToken=${nextPageToken}`;
@@ -19,12 +20,17 @@ export default function VideoList(props: props) {
                 const uploadsResponse = await fetch(uploadsURL);
                 const uploadsData: PlaylistVideoResponse =
                     await uploadsResponse.json();
-                setNextPageToken(uploadsData.nextPageToken);
-                setVideos((videos) => [...videos, ...uploadsData.items]);
-                setFetchNextPage(false);
+                if (isMounted) {
+                    setNextPageToken(uploadsData.nextPageToken);
+                    setVideos((videos) => [...videos, ...uploadsData.items]);
+                }
             }
+            setFetchNextPage(false);
         };
         updateResults();
+        return () => {
+            isMounted = false;
+        };
     });
     const videoComponents = videos.map((v) => {
         return <VideoCard {...v} key={v.id} />;
