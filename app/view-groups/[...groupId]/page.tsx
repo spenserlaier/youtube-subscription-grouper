@@ -1,3 +1,4 @@
+import VideoList from "@/components/VideoList";
 import { playlistItem, video } from "@/types/youtube-utils-types";
 import { subscriptionGroup } from "@/utils/database/database-utils";
 import { headers } from "next/headers";
@@ -19,6 +20,7 @@ export default async function ViewGroupWithId({
     let selectedGroup: undefined | null | subscriptionGroup = null;
     let subscriptionComponents = null;
     let uploadsComponents: ReactElement[] = [];
+    let videoLists: ReactElement[] = [];
     if (userGroupsResponse) {
         const groupsData: subscriptionGroup[] = await userGroupsResponse.json();
         console.log(groupsData);
@@ -30,71 +32,9 @@ export default async function ViewGroupWithId({
                 return sub.snippet.resourceId.channelId;
             });
             let channelUploads = [];
-            for (const id of channelIds) {
-                const uploadsData = await fetch(
-                    process.env.URL + `/api/uploads/${id}`,
-                    {
-                        headers: headers(),
-                    }
-                );
-                const uploadsResponse = await uploadsData.json();
-                const uploads: playlistItem[] = uploadsResponse.items;
-                channelUploads.push(uploads);
-            }
-            uploadsComponents = channelUploads.map((playlist) => {
-                const videos = playlist.map((v) => {
-                    let watchURL =
-                        process.env.URL +
-                        `/videos/${v.snippet.resourceId.videoId}`;
-                    //console.log("url generated: ", watchURL);
-                    return (
-                        <div key={v.id} className="flex flex-row">
-                            <Link href={watchURL}>
-                                {v.snippet.title}
-                                <Image
-                                    width={88}
-                                    height={88}
-                                    src={v.snippet.thumbnails["default"].url}
-                                    alt={`thumbnail for ${v.snippet.title}`}
-                                ></Image>
-                            </Link>
-                        </div>
-                    );
-                });
-                return <div key={playlist[0].id}>{videos}</div>;
+            videoLists = channelIds.map((id) => {
+                return <VideoList channelId={id} key={id} />;
             });
-
-            subscriptionComponents = selectedGroup.subscriptions.map(
-                (sub, idx) => {
-                    //console.log("logging thumbnails: ");
-                    //console.log(sub.snippet.thumbnails);
-                    /*
-                const playlistInformation = await fetch(
-                    `api/uploads/${sub.snippet.resourceId.channelId}`,
-                    {
-                        headers: headers(),
-                    }
-                );
-                 */
-
-                    return (
-                        <div key={sub.id}>
-                            <div>{sub.snippet.title}</div>
-                            <div>
-                                <Image
-                                    width={88}
-                                    height={88}
-                                    src={sub.snippet.thumbnails["default"].url}
-                                    alt="channel thumbnail"
-                                />
-                            </div>
-                            <div>{sub.snippet.description}</div>
-                            <div>{sub.snippet.resourceId.channelId}</div>
-                            <div> {uploadsComponents[idx]}</div>
-                        </div>
-                    );
-                }
-            );
         }
     }
     return (
@@ -105,9 +45,8 @@ export default async function ViewGroupWithId({
                 {" "}
                 {selectedGroup ? (
                     <div>
-                        {" "}
                         {selectedGroup.groupName}
-                        {subscriptionComponents}
+                        {videoLists}
                     </div>
                 ) : (
                     "Sorry, no group found with that id for the current user"
