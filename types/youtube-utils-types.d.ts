@@ -417,3 +417,14 @@ export type video = {
         };
     };
 };
+export type PlaylistVideoResponse = {
+    kind: "youtube#videoListResponse";
+    etag: string;
+    nextPageToken: string;
+    prevPageToken: string;
+    pageInfo: {
+        totalResults: number;
+        resultsPerPage: number;
+    };
+    items: video[];
+};
