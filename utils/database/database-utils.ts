@@ -89,3 +89,19 @@ export async function addSubscriptionGroup(
         );
     }
 }
+
+export async function addWatchedVideoToUser(
+    user: userCredentials,
+    videoId: string
+) {
+    const result = await usersCollection.findOneAndUpdate(
+        { ...user },
+        { $push: { alreadyWatched: videoId } },
+        { returnDocument: "after" }
+    );
+    if (result) {
+        console.log("added video to list of watched videos for user", result);
+    } else {
+        console.log("something went wrong when updating watched videos");
+    }
+}
