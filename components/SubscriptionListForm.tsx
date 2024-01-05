@@ -1,24 +1,12 @@
 "use client";
 import { useDrag, useDrop } from "react-dnd";
-import {
-    useState,
-    useRef,
-    Dispatch,
-    SetStateAction,
-    ChangeEvent,
-    MouseEventHandler,
-    FormEvent,
-    useEffect,
-} from "react";
-import SubscriptionCard from "./SubscriptionCard";
-import { draggableCard } from "@/types/draggable";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import {
     subscription,
     subscriptionResponse,
 } from "@/types/youtube-utils-types";
-import SubscriptionList from "./SubscriptionList";
+import SubscriptionList from "@/components/SubscriptionList";
 import { subscriptionGroup } from "@/utils/database/database-utils";
-import { headers } from "next/headers";
 
 type props = {
     //subscriptionName: string;
@@ -81,6 +69,7 @@ export default function SubscriptionListForm(props: props) {
                         headers: {
                             method: "GET",
                         },
+                        cache: "no-store",
                     }
                 );
                 const data = await response.json();
@@ -93,8 +82,8 @@ export default function SubscriptionListForm(props: props) {
                         return [...subs, ...data.items];
                     });
                 }
+                setFetchNextPage(false);
             }
-            setFetchNextPage(false);
         };
         fetchSubscriptionData();
         return () => {
@@ -102,7 +91,8 @@ export default function SubscriptionListForm(props: props) {
             //setSubscriptionResponse(null);
             //setAllSubscriptions([]);
         };
-    }, [fetchNextPage, subscriptionResponse]);
+    });
+    //}, [fetchNextPage, subscriptionResponse]);
 
     const [groupTitle, setGroupTitle] = useState<string>("");
 
