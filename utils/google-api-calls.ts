@@ -28,17 +28,22 @@ export async function getChannelDataById(
 
 export async function getVideosByPlaylistId(
     playlistId: string,
-    accessToken: string
+    accessToken: string,
+    pageToken: string | null = null
 ) {
-    const playlistVideosResponse = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${accessToken}`,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                Accept: "application/json",
-            },
-        }
-    );
+    console.log("getting videos by playlist id...");
+    let fetchURL = "";
+    if (pageToken && pageToken != "null") {
+        fetchURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${accessToken}&pageToken=${pageToken}`;
+    } else {
+        fetchURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=50&playlistId=${playlistId}&key=${accessToken}`;
+    }
+    const playlistVideosResponse = await fetch(fetchURL, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+        },
+    });
     if (playlistVideosResponse.status === 200) {
         const playlistData = await playlistVideosResponse.json();
         const playlistItems: playlistItem[] = playlistData.items;
