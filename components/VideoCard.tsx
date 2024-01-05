@@ -11,8 +11,8 @@ export default function VideoCard(props: video) {
                     <Image
                         src={props.snippet.thumbnails["default"].url}
                         width={88}
-                        alt="video thumbnail"
                         height={88}
+                        alt="video thumbnail"
                     ></Image>
                 </Link>
             </div>
