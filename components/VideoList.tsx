@@ -21,6 +21,9 @@ export default function VideoList(props: props) {
                 const uploadsData: PlaylistVideoResponse =
                     await uploadsResponse.json();
                 if (isMounted) {
+                    //TODO: why does the check for isMounted work here, but not
+                    //when placed with fetchNextPage, i.e. "if (isMounted && fetchNextPage)"? the latter
+                    //still causes duplicate renders
                     setNextPageToken(uploadsData.nextPageToken);
                     setVideos((videos) => [...videos, ...uploadsData.items]);
                 }
