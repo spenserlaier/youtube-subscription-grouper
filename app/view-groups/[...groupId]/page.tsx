@@ -45,7 +45,7 @@ export default async function ViewGroupWithId({
                     let watchURL =
                         process.env.URL +
                         `/videos/${v.snippet.resourceId.videoId}`;
-                    console.log("url generated: ", watchURL);
+                    //console.log("url generated: ", watchURL);
                     return (
                         <div key={v.id} className="flex flex-row">
                             <Link href={watchURL}>
