@@ -74,23 +74,18 @@ export default function SubscriptionListForm(props: props) {
                 );
                 const data = await response.json();
                 //console.log("logging data from subscription api call...", data);
-                if (isMounted) {
+                if (isMounted && data && data.items) {
                     console.log("we are mounted");
                     setSubscriptionResponse(data);
                     console.log("loggind retrieved data...", data);
                     setAllSubscriptions((subs) => {
                         return [...subs, ...data.items];
                     });
+                    setFetchNextPage(false);
                 }
-                setFetchNextPage(false);
             }
         };
         fetchSubscriptionData();
-        return () => {
-            isMounted = false;
-            //setSubscriptionResponse(null);
-            //setAllSubscriptions([]);
-        };
     });
     //}, [fetchNextPage, subscriptionResponse]);
 
