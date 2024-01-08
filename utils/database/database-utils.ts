@@ -26,6 +26,7 @@ export type user = {
     email: string;
     googleID: string;
     subscriptionGroups: subscriptionGroup[];
+    watchedVideosIds: string[];
 };
 export type userCredentials = {
     email: string;
@@ -90,10 +91,7 @@ export async function addSubscriptionGroup(
     }
 }
 
-export async function addWatchedVideoToUser(
-    user: userCredentials,
-    videoId: string
-) {
+export async function markVideoAsSeen(user: userCredentials, videoId: string) {
     const result = await usersCollection.findOneAndUpdate(
         { ...user },
         { $push: { alreadyWatched: videoId } },
@@ -101,7 +99,17 @@ export async function addWatchedVideoToUser(
     );
     if (result) {
         console.log("added video to list of watched videos for user", result);
+        return true;
     } else {
         console.log("something went wrong when updating watched videos");
+        return false;
     }
+}
+
+export async function getSeenVideos(userCredentials: userCredentials) {
+    const user = await usersCollection.findOne(userCredentials);
+    if (user) {
+        return user.watchedVideosIds;
+    }
+    return null;
 }
