@@ -24,7 +24,7 @@ export default function RootLayout({
         <NextAuthProvider>
             <CustomDndProvider backend={CustomHtml5Backend}>
                 <html lang="en">
-                    <body className={inter.className}>
+                    <body className={`${inter.className} bg-gray-600`}>
                         <Header />
                         {children}
                     </body>
