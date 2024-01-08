@@ -6,15 +6,22 @@ import VideoCard from "./VideoCard";
 type props = {
     channelId: string;
 };
+const VIDEOS_BATCH_SIZE = 5;
 
 export default function VideoList(props: props) {
     const [nextPageToken, setNextPageToken] = useState<string | null>(null);
     const [fetchNextPage, setFetchNextPage] = useState(true);
     const [videos, setVideos] = useState<video[]>([]);
     const listRef = useRef<HTMLDivElement>(null);
+    const [watchedVideos, setWatchedVideos] = useState<string[] | null>(null);
     useEffect(() => {
         let isMounted = true;
         const updateResults = async () => {
+            if (watchedVideos === null) {
+                const watchedVideosResponse = await fetch("/api/watchedVideos");
+                const videos: string[] = await watchedVideosResponse.json();
+                setWatchedVideos(videos);
+            }
             if (fetchNextPage) {
                 const uploadsURL = `/api/uploads/${props.channelId}?pageToken=${nextPageToken}`;
                 //const uploadsResponse = await fetch()
@@ -22,12 +29,20 @@ export default function VideoList(props: props) {
                 const uploadsData: PlaylistVideoResponse =
                     await uploadsResponse.json();
                 if (uploadsData && isMounted) {
-                    //TODO: why does the check for isMounted work here, but not
-                    //when placed with fetchNextPage, i.e. "if (isMounted && fetchNextPage)"? the latter
-                    //still causes duplicate renders
                     setNextPageToken(uploadsData.nextPageToken);
-                    setVideos((videos) => [...videos, ...uploadsData.items]);
-                    setFetchNextPage(false);
+                    const validVideos = watchedVideos
+                        ? uploadsData.items.filter(
+                              (video) => !watchedVideos.includes(video.id)
+                          )
+                        : uploadsData.items;
+                    //setVideos((videos) => [...videos, ...uploadsData.items]);
+                    setVideos((videos) => [...videos, ...validVideos]);
+                    if (
+                        videos.length >= VIDEOS_BATCH_SIZE ||
+                        nextPageToken === undefined
+                    ) {
+                        setFetchNextPage(false);
+                    }
                 }
             }
         };
@@ -37,7 +52,9 @@ export default function VideoList(props: props) {
         };
     });
     const videoComponents = videos.map((v) => {
+        //if (watchedVideos && !watchedVideos.includes(v.id)) {
         return <VideoCard {...v} key={v.id} />;
+        //}
     });
 
     useEffect(() => {

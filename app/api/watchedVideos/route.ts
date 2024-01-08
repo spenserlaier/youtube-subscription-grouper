@@ -22,7 +22,9 @@ export async function GET(request: NextRequest, response: NextResponse) {
             email: token.email!,
         };
         const seenVideos = await getSeenVideos(userCredentials);
-        return Response.json(seenVideos);
+        console.log("the videos we've seen are: ", seenVideos);
+
+        return Response.json(seenVideos ? seenVideos : []);
     }
     return new Response(null, {
         status: 400,

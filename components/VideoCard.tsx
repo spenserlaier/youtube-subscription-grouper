@@ -5,19 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-type props = video & userCredentials;
-export default function VideoCard(props: props) {
+export default function VideoCard(props: video) {
     const [databaseUpdated, setDatabaseUpdated] = useState(false);
     const [hideVideoButtonClicked, setHideVideoButtonClicked] = useState(false);
     useEffect(() => {
         const markAsSeenInDatabase = async () => {
+            console.log("receved the id: ", props.id);
             if (hideVideoButtonClicked && !databaseUpdated) {
-                const userCredentials: userCredentials = {
-                    email: props.email,
-                    googleID: props.googleID,
-                };
-
+                console.log("about to make db watchedvideos request...");
                 const result = await fetch("/api/watchedVideos", {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                     method: "POST",
                     body: JSON.stringify({ videoId: props.id }),
                 });

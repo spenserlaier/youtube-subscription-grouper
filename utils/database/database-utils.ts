@@ -26,7 +26,7 @@ export type user = {
     email: string;
     googleID: string;
     subscriptionGroups: subscriptionGroup[];
-    watchedVideosIds: string[];
+    alreadyWatched: string[];
 };
 export type userCredentials = {
     email: string;
@@ -109,7 +109,8 @@ export async function markVideoAsSeen(user: userCredentials, videoId: string) {
 export async function getSeenVideos(userCredentials: userCredentials) {
     const user = await usersCollection.findOne(userCredentials);
     if (user) {
-        return user.watchedVideosIds;
+        console.log("user was found when retrieving watched videos");
+        return user.alreadyWatched;
     }
     return null;
 }

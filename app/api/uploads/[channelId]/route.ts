@@ -45,7 +45,7 @@ export async function GET(
             token.accessToken!,
             pageToken
         );
-        console.log("retrieved playlist videos...", playlistVideos);
+        //console.log("retrieved playlist videos...", playlistVideos);
         return Response.json(playlistVideos);
         /*
         let gotVideo = false;
