@@ -84,10 +84,10 @@ export async function getUserSubscriptions(
 ) {
     let fetchURL = "";
     if (pageToken == null || pageToken === "null") {
-        fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}`;
+        fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}&order=alphabetical`;
     } else {
         console.log("proceeding with the following page token: ", pageToken);
-        fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}&pageToken=${pageToken}`;
+        fetchURL = `https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet%2CcontentDetails&mine=true&maxResults=${maxResults}&pageToken=${pageToken}&order=alphabetical`;
     }
 
     const subscriptionResponse = await fetch(fetchURL, {
