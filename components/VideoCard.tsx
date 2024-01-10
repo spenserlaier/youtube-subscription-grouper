@@ -36,17 +36,16 @@ export default function VideoCard(props: video) {
         setHideVideoButtonClicked(true);
     };
     let hideVideoButton = (
-        <button onClick={handleHideVideoClick}>
-            {" "}
-            click here to hide this video in the future
-        </button>
+        <div className="border m-2 align-middle text-center rounded-xl flex p-2">
+            <button onClick={handleHideVideoClick}> Hide This Video</button>
+        </div>
     );
     if (hideVideoButtonClicked) {
-        hideVideoButton = <div> you won&apos;t see this video again</div>;
+        hideVideoButton = <div> You Won&apos;t See This Video Again</div>;
     }
     return (
         <>
-            <div className="flex flex-row">
+            <div className="flex flex-row border p-2 rounded-xl m-2">
                 <Link href={`/videos/${props.id}`}>
                     <h2>{props.snippet.title}</h2>
                     <Image

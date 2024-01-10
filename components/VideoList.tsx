@@ -86,9 +86,13 @@ export default function VideoList(props: props) {
 
     return (
         <>
-            <div ref={listRef} className="max-h-64 max-w-64 overflow-auto">
-                <div>this is a placeholder for the video list component</div>
-                <div>{videoComponents}</div>
+            <div
+                ref={listRef}
+                className="max-h-64 overflow-auto w-2/4 border m-2"
+            >
+                <div className="flex flex-col items-center justify-center">
+                    {videoComponents}
+                </div>
             </div>
         </>
     );

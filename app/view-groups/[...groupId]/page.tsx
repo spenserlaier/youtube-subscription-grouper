@@ -44,8 +44,11 @@ export default async function ViewGroupWithId({
             <div>
                 {" "}
                 {selectedGroup ? (
-                    <div>
-                        {selectedGroup.groupName}
+                    <div className="flex flex-col items-center">
+                        <h1 className="text-2xl">
+                            {" "}
+                            Viewing Group: {selectedGroup.groupName}
+                        </h1>
                         {videoLists}
                     </div>
                 ) : (
