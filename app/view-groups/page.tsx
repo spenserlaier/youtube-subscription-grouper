@@ -17,13 +17,20 @@ export default async function ViewGroups() {
             href={`/view-groups/${group.id!.toString()}`}
             key={group.groupName}
         >
-            <div>{group.groupName}</div>
+            <div className="text-2xl p-3 m-2 border rounded-xl text-center">
+                {group.groupName}
+            </div>
         </Link>
     ));
+    const listMessage = groupComponents
+        ? "Your Groups: "
+        : "Looks like you haven't created any groups yet.";
     return (
-        <>
-            <div>View your groups here</div>
-            {groupComponents}
-        </>
+        <div className="flex flex-col justify-center items-center ">
+            <h1 className="text-2xl  p-2 m-2">{listMessage}</h1>
+            <div className="border m-2 min-w-64 rounded-xl">
+                {groupComponents}
+            </div>
+        </div>
     );
 }

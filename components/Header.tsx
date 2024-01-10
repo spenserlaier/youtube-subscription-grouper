@@ -4,7 +4,7 @@ import LoginButton from "@/components/LoginButton";
 
 export default function Header() {
     return (
-        <header className="flex flex-row justify-between items-center border text-xl rounded-lg">
+        <header className="flex flex-row justify-around items-center border text-xl rounded-lg">
             <Link className="border p-2 rounded-lg m-2" href="/home">
                 {" "}
                 Go Home
