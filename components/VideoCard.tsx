@@ -1,11 +1,11 @@
 "use client";
-import { video } from "@/types/youtube-utils-types";
+import { playlistItem, video } from "@/types/youtube-utils-types";
 import { userCredentials } from "@/utils/database/database-utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-export default function VideoCard(props: video) {
+export default function VideoCard(props: playlistItem) {
     const [databaseUpdated, setDatabaseUpdated] = useState(false);
     const [hideVideoButtonClicked, setHideVideoButtonClicked] = useState(false);
     useEffect(() => {
@@ -43,10 +43,11 @@ export default function VideoCard(props: video) {
     if (hideVideoButtonClicked) {
         hideVideoButton = <div> You Won&apos;t See This Video Again</div>;
     }
+    console.log("logging props from video card...", props);
     return (
         <>
             <div className="flex flex-row border p-2 rounded-xl m-2 w-3/4 justify-between items-center">
-                <Link href={`/videos/${props.id}`}>
+                <Link href={`/videos/${props.contentDetails.videoId}`}>
                     <div className="flex flex-col items-center text-center">
                         <h2 className="text-l">{props.snippet.title}</h2>
                         <Image
