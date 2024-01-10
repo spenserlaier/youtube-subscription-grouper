@@ -46,8 +46,10 @@ export default function SubscriptionList(props: props) {
 
     return (
         <>
-            <div className="text-xl" ref={drop}>
-                Drop Target
+            <div
+                className="text-xl min-h-10 min-w-20 border border-b-0 border-t-0"
+                ref={drop}
+            >
                 {subscriptionComponents}
             </div>
         </>

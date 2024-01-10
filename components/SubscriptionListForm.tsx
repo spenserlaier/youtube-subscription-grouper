@@ -137,26 +137,48 @@ export default function SubscriptionListForm(props: props) {
         return null;
     };
     return (
-        <>
-            <h1>
-                Group Title:
-                <input value={groupTitle} onChange={handleNameChange}></input>
-            </h1>
-            <div className="flex flex-row">
-                {allSubscriptionsList}
-                {selectedSubscriptionsList}
+        <div>
+            <div>
+                <h1 className="flex flex-row justify-center text-2xl">
+                    Group Title:
+                    <input
+                        className="bg-gray-400"
+                        value={groupTitle}
+                        onChange={handleNameChange}
+                    ></input>
+                </h1>
             </div>
+            <div className="flex flex-row justify-center">
+                <div className="flex flex-row">
+                    <div className="text-center">
+                        <h1 className="text-2xl border">
+                            {" "}
+                            Drag Items From Here...
+                        </h1>
 
-            <button
-                onClick={async (e) => {
-                    const ev =
-                        e as unknown as React.MouseEventHandler<HTMLButtonElement>;
-                    handleSubmit(ev);
-                }}
-            >
-                {" "}
-                Submit List{" "}
-            </button>
-        </>
+                        {allSubscriptionsList}
+                        <div className="border"></div>
+                    </div>
+                    <div className="text-center min-w-60">
+                        <h1 className="text-2xl border">To Here</h1>
+
+                        {selectedSubscriptionsList}
+                        <div className="border"></div>
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-row justify-center text-2xl">
+                <button
+                    onClick={async (e) => {
+                        const ev =
+                            e as unknown as React.MouseEventHandler<HTMLButtonElement>;
+                        handleSubmit(ev);
+                    }}
+                >
+                    {" "}
+                    Submit List{" "}
+                </button>
+            </div>
+        </div>
     );
 }

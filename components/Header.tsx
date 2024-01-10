@@ -4,7 +4,7 @@ import LoginButton from "@/components/LoginButton";
 
 export default function Header() {
     return (
-        <header className="flex flex-row justify-between">
+        <header className="flex flex-row justify-between border">
             <LoginButton></LoginButton>
             <Link href="/home"> Go Home</Link>
             <Link href="/create-group"> Create a Group of Subscriptions</Link>
