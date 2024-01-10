@@ -4,12 +4,20 @@ import LoginButton from "@/components/LoginButton";
 
 export default function Header() {
     return (
-        <header className="flex flex-row justify-between border">
+        <header className="flex flex-row justify-between items-center border text-xl rounded-lg">
+            <Link className="border p-2 rounded-lg m-2" href="/home">
+                {" "}
+                Go Home
+            </Link>
+            <Link className="border p-2 rounded-lg m-2" href="/create-group">
+                {" "}
+                Create a Group of Subscriptions
+            </Link>
+            <Link className="border p-2 rounded-lg m-2" href="/view-groups">
+                {" "}
+                View Created Groups
+            </Link>
             <LoginButton></LoginButton>
-            <Link href="/home"> Go Home</Link>
-            <Link href="/create-group"> Create a Group of Subscriptions</Link>
-            <Link href="/"> Root Page </Link>
-            <Link href="/view-groups"> View Created Groups</Link>
         </header>
     );
 }

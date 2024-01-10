@@ -13,9 +13,11 @@ import SubscriptionList from "@/components/SubscriptionList";
 import Link from "next/link";
 export default async function Home() {
     return (
-        <>
-            <h1 className="text-red-50"> this is the homepage huzzah</h1>
-            <Link href="/create-group">Create A Subscription Group</Link>
-        </>
+        <div>
+            <h1 className="text-2xl text-center">
+                Youtube Subscription Grouper. Create groups of subscriptions and
+                stay up-to-date with new videos.
+            </h1>
+        </div>
     );
 }
