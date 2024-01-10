@@ -88,7 +88,7 @@ export default function VideoList(props: props) {
         <>
             <div
                 ref={listRef}
-                className="max-h-64 overflow-auto w-3/4 border m-2"
+                className="max-h-[480px] overflow-auto w-3/4 border m-4"
             >
                 <div className="flex flex-col items-center justify-center">
                     {videoComponents}

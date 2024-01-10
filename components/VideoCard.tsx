@@ -48,7 +48,7 @@ export default function VideoCard(props: video) {
             <div className="flex flex-row border p-2 rounded-xl m-2 w-3/4 justify-between items-center">
                 <Link href={`/videos/${props.id}`}>
                     <div className="flex flex-col items-center text-center">
-                        <h2 className="text-xl">{props.snippet.title}</h2>
+                        <h2 className="text-l">{props.snippet.title}</h2>
                         <Image
                             //src={props.snippet.thumbnails["default"].url}
                             src={props.snippet.thumbnails["standard"].url}

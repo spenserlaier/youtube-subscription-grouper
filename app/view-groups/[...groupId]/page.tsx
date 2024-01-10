@@ -36,7 +36,7 @@ export default async function ViewGroupWithId({
             videoLists = selectedGroup.subscriptions.map((sub) => {
                 return (
                     <div
-                        className="flex flex-col items-center w-3/4 border"
+                        className="flex flex-col items-center w-3/4 border m-2"
                         key={sub.snippet.resourceId.channelId}
                     >
                         <div className="border m-2">
