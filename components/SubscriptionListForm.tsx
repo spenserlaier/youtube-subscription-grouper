@@ -138,11 +138,11 @@ export default function SubscriptionListForm(props: props) {
     };
     return (
         <div>
-            <div>
+            <div className="m-3">
                 <h1 className="flex flex-row justify-center text-2xl">
                     Group Title:
                     <input
-                        className="bg-gray-400"
+                        className="bg-gray-400 rounded-xl"
                         value={groupTitle}
                         onChange={handleNameChange}
                     ></input>
@@ -150,17 +150,17 @@ export default function SubscriptionListForm(props: props) {
             </div>
             <div className="flex flex-row justify-center">
                 <div className="flex flex-row">
-                    <div className="text-center">
-                        <h1 className="text-2xl border">
+                    <div className="text-center m-2">
+                        <h1 className="text-2xl border rounded-md">
                             {" "}
                             Drag Items From Here...
                         </h1>
 
                         {allSubscriptionsList}
-                        <div className="border"></div>
+                        <div className="border rounded-lg"></div>
                     </div>
-                    <div className="text-center min-w-60">
-                        <h1 className="text-2xl border">To Here</h1>
+                    <div className="text-center min-w-60 m-2">
+                        <h1 className="text-2xl border rounded-md">To Here</h1>
 
                         {selectedSubscriptionsList}
                         <div className="border"></div>
@@ -169,6 +169,7 @@ export default function SubscriptionListForm(props: props) {
             </div>
             <div className="flex flex-row justify-center text-2xl">
                 <button
+                    className="border m-3 p-3 rounded-xl"
                     onClick={async (e) => {
                         const ev =
                             e as unknown as React.MouseEventHandler<HTMLButtonElement>;
