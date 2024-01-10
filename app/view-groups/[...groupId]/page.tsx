@@ -1,3 +1,4 @@
+import SubscriptionCard from "@/components/SubscriptionCard";
 import VideoList from "@/components/VideoList";
 import { playlistItem, video } from "@/types/youtube-utils-types";
 import { subscriptionGroup } from "@/utils/database/database-utils";
@@ -32,8 +33,20 @@ export default async function ViewGroupWithId({
                 return sub.snippet.resourceId.channelId;
             });
             let channelUploads = [];
-            videoLists = channelIds.map((id) => {
-                return <VideoList channelId={id} key={id} />;
+            videoLists = selectedGroup.subscriptions.map((sub) => {
+                return (
+                    <div
+                        className="flex flex-col items-center w-3/4 border"
+                        key={sub.snippet.resourceId.channelId}
+                    >
+                        <div className="border m-2">
+                            <SubscriptionCard {...sub} />
+                        </div>
+                        <VideoList
+                            channelId={sub.snippet.resourceId.channelId}
+                        />
+                    </div>
+                );
             });
         }
     }
@@ -44,7 +57,7 @@ export default async function ViewGroupWithId({
             <div>
                 {" "}
                 {selectedGroup ? (
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center p-2">
                         <h1 className="text-2xl">
                             {" "}
                             Viewing Group: {selectedGroup.groupName}

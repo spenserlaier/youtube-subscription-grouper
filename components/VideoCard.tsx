@@ -36,7 +36,7 @@ export default function VideoCard(props: video) {
         setHideVideoButtonClicked(true);
     };
     let hideVideoButton = (
-        <div className="border m-2 align-middle text-center rounded-xl flex p-2">
+        <div className="border m-2 align-middle text-center rounded-xl flex p-2 max-h-20">
             <button onClick={handleHideVideoClick}> Hide This Video</button>
         </div>
     );
@@ -45,15 +45,21 @@ export default function VideoCard(props: video) {
     }
     return (
         <>
-            <div className="flex flex-row border p-2 rounded-xl m-2">
+            <div className="flex flex-row border p-2 rounded-xl m-2 w-3/4 justify-between items-center">
                 <Link href={`/videos/${props.id}`}>
-                    <h2>{props.snippet.title}</h2>
-                    <Image
-                        src={props.snippet.thumbnails["default"].url}
-                        width={88}
-                        height={88}
-                        alt="video thumbnail"
-                    ></Image>
+                    <div className="flex flex-col items-center text-center">
+                        <h2 className="text-xl">{props.snippet.title}</h2>
+                        <Image
+                            //src={props.snippet.thumbnails["default"].url}
+                            src={props.snippet.thumbnails["standard"].url}
+                            //width={640}
+                            width={200}
+                            height={0}
+                            //height={480}
+                            alt="video thumbnail"
+                            className=" h-auto rounded-xl"
+                        ></Image>
+                    </div>
                 </Link>
                 {hideVideoButton}
             </div>
